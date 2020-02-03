@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+    .modify {
+        border: 1px solid black;
+    }
+    </style>
+    
+    </head>
+
+    <body>
+
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+
+        <svg style="width: 1000px; height : 500px;" class="modify"></svg>
+
+        <script>
+            
+            d3.csv("taskpopulation.csv" , (err , data) => {
+                 dataViz(data);
+            });
+
+            function dataViz(incomingdata) {
+
+                var min = d3.min(incomingdata , e1 => +e1.Value)
+                var max = d3.max(incomingdata , e1 => +e1.Value)
+
+                var minMax = d3.extent(incomingdata , e1 => +e1.Value)
+                var filled = function(d) {
+                    return d.Value
+                }
+                console.log(filled)
+
+                console.log(minMax)
+           
+
+                var colorScale = d3.scaleLinear().domain([minMax[0] , minMax[1]]).range([d3.rgb("#00FF00") , d3.rgb("#0000FF")])
+
+                var radiusScale = d3.scaleLinear().domain([minMax[0] , minMax[1]]).range([5 , 50])
+                // console.log(colorScale)
+                // console.log( d => d.Value)
+                d3.select("svg")
+                    .selectAll("circle")
+                    .data(incomingdata)
+                    .enter()
+                    .append("circle")
+                    .attr("r", d => radiusScale(d.Value))
+                    .attr("cy" , 250)
+                    .attr("cx", function(d, i){return 50 + (i*100)})
+                    .style("fill" , d => colorScale(d.Value) )
+                    .on("click" , function(d) { alert("Name of counrty : " +  d.Name)})
+
+               
+            }
+
+        </script>
+    </body>
